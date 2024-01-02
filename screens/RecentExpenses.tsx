@@ -1,12 +1,24 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList, ListRenderItemInfo } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import TitleCard from "../components/TitleCard";
 import ExpensesCard from "../components/ExpensesCard";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import { RootParamList } from "../types/Navigation";
+import { getLastSevenDays } from "../utils/dates";
+import { expensesData } from "../data/dummy-data";
+import { Expense } from "../types/Expense";
 
 type Props = NativeStackScreenProps<RootParamList, "Recent">;
 
 export default function RecentExpenses({ navigation }: Props) {
+  const lastSevenDays = getLastSevenDays(expensesData);
+
+  const total = lastSevenDays.reduce(
+    (total, expense) => total + expense.value,
+    0
+  );
+
   const pressHandler = (id: string) => {
     navigation.navigate("Expense", {
       id: id,
@@ -15,12 +27,19 @@ export default function RecentExpenses({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <TitleCard title="Last 7 days" value="67.16" />
-      <ExpensesCard
-        subject="A book"
-        date="2088-02-09"
-        value="14.09"
-        onPress={() => pressHandler("coming")}
+      <TitleCard title="Last 7 days" value={total} />
+
+      <FlatList
+        data={lastSevenDays}
+        renderItem={({ item }: ListRenderItemInfo<Expense>) => (
+          <ExpensesCard
+            value={item.value}
+            subject={item.subject}
+            date={item.date}
+            onPress={() => pressHandler(item.id)}
+          />
+        )}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );

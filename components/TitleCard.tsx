@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 
 interface Props {
   title: string;
-  value: string;
+  value: number;
 }
 
-export default function TitleCard({ title, value }: Props) {
+export default function TitleCard({ title, value = 0 }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Props {
   subject: string;
-  value: string;
+  value: number;
   date: string;
   onPress: () => void;
 }
@@ -17,7 +17,9 @@ export default function ExpensesCard({ subject, value, date, onPress }: Props) {
       >
         <View>
           <Text style={styles.textTitle}>{subject}</Text>
-          <Text style={styles.date}>{date}</Text>
+          <Text style={styles.date}>
+            {new Date(date).toISOString().split("T")[0]}
+          </Text>
         </View>
         <View style={styles.valueContainer}>
           <Text style={styles.value}>$ {value}</Text>
@@ -30,10 +32,11 @@ export default function ExpensesCard({ subject, value, date, onPress }: Props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    marginVertical: 5,
   },
 
   innerContainer: {
-    height: 75,
+    height: 80,
     width: "95%",
     backgroundColor: "#94c0d6",
 
@@ -66,8 +69,10 @@ const styles = StyleSheet.create({
   valueContainer: {
     paddingHorizontal: 6,
     justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#29556B",
     borderRadius: 8,
+    width: 90,
   },
 
   value: {
