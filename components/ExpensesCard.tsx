@@ -4,14 +4,16 @@ interface Props {
   subject: string;
   value: string;
   date: string;
+  onPress: () => void;
 }
 
-export default function ExpensesCard({ subject, value, date }: Props) {
+export default function ExpensesCard({ subject, value, date, onPress }: Props) {
   return (
     <View style={styles.container}>
       <Pressable
         style={[styles.innerContainer, styles.textContainer]}
         android_ripple={{ color: "#ccc" }}
+        onPress={onPress}
       >
         <View>
           <Text style={styles.textTitle}>{subject}</Text>
