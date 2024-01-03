@@ -6,24 +6,25 @@ import ExpensesCard from "../components/ExpensesCard";
 import { Expense } from "../types/Expense";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootParamList } from "../types/Navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 type Props = NativeStackScreenProps<RootParamList, "All">;
 
 export default function AllExpenses({ navigation }: Props) {
-  const total = expensesData.reduce(
-    (total, expense) => total + expense.value,
-    0
-  );
+  const { expenses } = useSelector((state: RootState) => state.expenses);
 
-  const allExpenses = expensesData.sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
+  const total = expenses.reduce((total, expense) => total + expense.value, 0);
+
+  const allExpenses = expenses.sort((a, b) => {
+    const dateA = new Date(a.date as string).getTime();
+    const dateB = new Date(b.date as string).getTime();
     return dateB - dateA;
   });
 
   const pressHandler = (id: string) => {
     navigation.navigate("Expense", {
-      id: id,
+      id,
     });
   };
 

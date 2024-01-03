@@ -8,11 +8,15 @@ import { RootParamList } from "../types/Navigation";
 import { getLastSevenDays } from "../utils/dates";
 import { expensesData } from "../data/dummy-data";
 import { Expense } from "../types/Expense";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 type Props = NativeStackScreenProps<RootParamList, "Recent">;
 
 export default function RecentExpenses({ navigation }: Props) {
-  const lastSevenDays = getLastSevenDays(expensesData);
+  const { expenses } = useSelector((state: RootState) => state.expenses);
+
+  const lastSevenDays = getLastSevenDays(expenses);
 
   const total = lastSevenDays.reduce(
     (total, expense) => total + expense.value,
@@ -21,7 +25,7 @@ export default function RecentExpenses({ navigation }: Props) {
 
   const pressHandler = (id: string) => {
     navigation.navigate("Expense", {
-      id: id,
+      id,
     });
   };
 

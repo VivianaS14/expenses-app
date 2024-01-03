@@ -1,9 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { DateType } from "react-native-ui-datepicker";
 
 interface Props {
   subject: string;
   value: number;
-  date: string;
+  date: DateType;
   onPress: () => void;
 }
 
@@ -17,9 +18,7 @@ export default function ExpensesCard({ subject, value, date, onPress }: Props) {
       >
         <View>
           <Text style={styles.textTitle}>{subject}</Text>
-          <Text style={styles.date}>
-            {new Date(date).toISOString().split("T")[0]}
-          </Text>
+          <Text style={styles.date}>{date?.toString().split(" ")[0]}</Text>
         </View>
         <View style={styles.valueContainer}>
           <Text style={styles.value}>$ {value}</Text>

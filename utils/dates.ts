@@ -8,13 +8,13 @@ export const getLastSevenDays = (data: Expense[]) => {
   );
 
   const expensesLast7Days = data.filter((expense) => {
-    const expenseDate = new Date(expense.date);
+    const expenseDate = new Date(expense.date as string);
     return expenseDate >= sevenDaysAgo && expenseDate <= currentDate;
   });
 
   expensesLast7Days.sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
+    const dateA = new Date(a.date as string).getTime();
+    const dateB = new Date(b.date as string).getTime();
     return dateB - dateA;
   });
 
