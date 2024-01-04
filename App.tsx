@@ -21,6 +21,7 @@ import Expense from "./screens/Expense";
 import { RootParamList } from "./types/Navigation";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import { Colors } from "./utils/colors";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,23 +35,23 @@ function BottomNavigator({ navigation }: Props) {
     <>
       <BottomTab.Navigator
         initialRouteName="Recent"
-        sceneContainerStyle={{ backgroundColor: "#FFF7D6" }}
+        sceneContainerStyle={{ backgroundColor: Colors.thirdColor }}
         screenOptions={{
-          headerStyle: { backgroundColor: "#29556B" },
+          headerStyle: { backgroundColor: Colors.mainColor },
           headerTitleStyle: {
             fontFamily: "Poppins-SemiBold",
             fontSize: 27,
-            color: "#FFF7D6",
+            color: Colors.thirdColor,
           },
           tabBarLabelStyle: {
             fontFamily: "Poppins-SemiBold",
             fontSize: 12,
             bottom: 12,
           },
-          tabBarActiveTintColor: "#FFF7D6",
-          tabBarInactiveTintColor: "#00BAA3",
+          tabBarActiveTintColor: Colors.thirdColor,
+          tabBarInactiveTintColor: Colors.secondColor,
           tabBarStyle: {
-            backgroundColor: "#29556B",
+            backgroundColor: Colors.mainColor,
             height: 70,
           },
           headerRight: () => (
@@ -61,7 +62,11 @@ function BottomNavigator({ navigation }: Props) {
               ]}
               onPress={() => navigation.navigate("Expense", { id: "" })}
             >
-              <Ionicons name="add-circle-outline" size={27} color="#FFF7D6" />
+              <Ionicons
+                name="add-circle-outline"
+                size={27}
+                color={Colors.thirdColor}
+              />
             </Pressable>
           ),
         }}
@@ -121,15 +126,15 @@ export default function App() {
             <Stack.Navigator
               screenOptions={{
                 headerShown: false,
-                headerStyle: { backgroundColor: "#29556B" },
+                headerStyle: { backgroundColor: Colors.mainColor },
                 headerTitleStyle: {
                   fontFamily: "Poppins-SemiBold",
                   fontSize: 27,
-                  color: "#FFF7D6",
+                  color: Colors.thirdColor,
                 },
                 headerTitleAlign: "center",
-                headerTintColor: "#FFF7D6",
-                contentStyle: { backgroundColor: "#FFF7D6" },
+                headerTintColor: Colors.thirdColor,
+                contentStyle: { backgroundColor: Colors.thirdColor },
               }}
             >
               <Stack.Screen name="Buttons" component={BottomNavigator} />

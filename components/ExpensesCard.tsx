@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { DateType } from "react-native-ui-datepicker";
+import { Colors } from "../utils/colors";
 
 interface Props {
   subject: string;
@@ -62,14 +63,14 @@ const styles = StyleSheet.create({
   date: {
     fontFamily: "Poppins-ExtraLightItalic",
     fontSize: 16,
-    color: "#FFF7D6",
+    color: Colors.thirdColor,
   },
 
   valueContainer: {
     paddingHorizontal: 6,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#29556B",
+    backgroundColor: Colors.mainColor,
     borderRadius: 8,
     width: 90,
   },

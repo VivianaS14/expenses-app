@@ -21,6 +21,7 @@ import CustomInput from "../components/CustomInput";
 import CustomDatePicker from "../components/CustomDatePicker";
 import { getToday } from "../utils/dates";
 import { expensesApi } from "../api";
+import { Colors } from "../utils/colors";
 
 type Props = NativeStackScreenProps<RootParamList, "Expense">;
 
@@ -124,7 +125,11 @@ export default function Expense({ route, navigation }: Props) {
       <View style={styles.buttonsContainer}>
         {expense ? (
           <>
-            <Button mode="contained" color="#29556B" onPress={onUpdateExpense}>
+            <Button
+              mode="contained"
+              color={Colors.mainColor}
+              onPress={onUpdateExpense}
+            >
               Update
             </Button>
             <Button color="#86363B" onPress={onDeleteExpense}>
@@ -132,7 +137,11 @@ export default function Expense({ route, navigation }: Props) {
             </Button>
           </>
         ) : (
-          <Button mode="contained" color="#29556B" onPress={handleSubmit}>
+          <Button
+            mode="contained"
+            color={Colors.mainColor}
+            onPress={handleSubmit}
+          >
             Add New
           </Button>
         )}
@@ -162,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 15,
     borderRadius: 8,
-    borderColor: "#29556B",
+    borderColor: Colors.mainColor,
     borderWidth: 1,
   },
 

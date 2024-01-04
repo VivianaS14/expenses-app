@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
+import { Colors } from "../utils/colors";
 
 interface Props {
   title: string;
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     height: 60,
     width: "95%",
-    backgroundColor: "#29556B",
+    backgroundColor: Colors.mainColor,
     borderRadius: 8,
     elevation: 10,
     shadowColor: "black",
@@ -44,12 +45,12 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Poppins-Medium",
     fontSize: 20,
-    color: "#FFF7D6",
+    color: Colors.thirdColor,
   },
 
   value: {
     fontFamily: "Poppins-Bold",
     fontSize: 20,
-    color: "#FFF7D6",
+    color: Colors.thirdColor,
   },
 });

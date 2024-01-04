@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
+import { Colors } from "../utils/colors";
 
 interface Props {
   value: string;
@@ -26,9 +27,9 @@ export default function CustomInput({
         keyboardType={isNumeric ? "number-pad" : "default"}
         left={isNumeric && <TextInput.Icon icon="cash" />}
         mode="outlined"
-        selectionColor="#00BAA3"
-        activeOutlineColor="#00BAA3"
-        outlineColor="#29556B"
+        selectionColor={Colors.secondColor}
+        activeOutlineColor={Colors.secondColor}
+        outlineColor={Colors.mainColor}
       />
     </View>
   );

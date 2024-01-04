@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import { Colors } from "../utils/colors";
 
 interface Props {
   date: DateType;
@@ -16,9 +17,9 @@ export default function CustomDatePicker({ date, onValueChange }: Props) {
           onValueChange={onValueChange}
           maximumDate={new Date()}
           displayFullDays={true}
-          headerButtonColor="#00BAA3"
+          headerButtonColor={Colors.secondColor}
           headerContainerStyle={{ paddingBottom: 5 }}
-          selectedItemColor="#00BAA3"
+          selectedItemColor={Colors.secondColor}
           selectedTextStyle={{
             fontFamily: "Poppins-SemiBold",
           }}
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 15,
     borderRadius: 8,
-    borderColor: "#29556B",
+    borderColor: Colors.mainColor,
     borderWidth: 1,
   },
 });

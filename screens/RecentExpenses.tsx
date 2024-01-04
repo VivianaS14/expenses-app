@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { allExpenses, fetchExpenses } from "../features/expenses/expensesSlice";
 import { useEffect } from "react";
 import { ActivityIndicator } from "react-native-paper";
+import { Colors } from "../utils/colors";
 
 type Props = NativeStackScreenProps<RootParamList, "Recent">;
 
@@ -52,7 +53,7 @@ export default function RecentExpenses({ navigation }: Props) {
   let content;
 
   if (expensesStatus === "loading") {
-    content = <ActivityIndicator animating={true} color="#29556B" />;
+    content = <ActivityIndicator animating={true} color={Colors.mainColor} />;
   } else if (expensesStatus === "succeeded") {
     content = (
       <FlatList
