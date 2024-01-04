@@ -4,80 +4,99 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "react-native-paper";
 import { DateType } from "react-native-ui-datepicker";
 
-import uuid from "react-native-uuid";
-
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addNewExpense,
   updateExpense,
   deleteExpense,
-  newExpense,
+  expenseById,
+  fetchExpenses,
 } from "../features/expenses/expensesSlice";
 
 import { RootParamList } from "../types/Navigation";
+import { Status } from "../types/Expense";
 
 import CustomInput from "../components/CustomInput";
 import CustomDatePicker from "../components/CustomDatePicker";
 import { getToday } from "../utils/dates";
+import { expensesApi } from "../api";
 
 type Props = NativeStackScreenProps<RootParamList, "Expense">;
 
 export default function Expense({ route, navigation }: Props) {
-  const { expenses } = useSelector((state: RootState) => state.expenses);
-  const dispatch = useDispatch();
+  const id = route.params.id;
+  const expense = useSelector((state: RootState) => expenseById(state, id));
+  const dispatch = useDispatch<AppDispatch>();
 
   const today = getToday();
-
-  const id = route.params.id;
-  const expense = expenses.find((expense) => expense.id === id);
 
   const [subject, setSubject] = useState(expense ? expense.subject : "");
   const [value, setValue] = useState(expense ? `${expense.value}` : "");
   const [date, setDate] = useState<DateType>(expense ? expense.date : today);
+  const [addNewStatus, setAddNewStatus] = useState<Status>("idle");
 
-  const onUpdateExpense = () => {
-    dispatch(
-      updateExpense({
-        id: expense!.id,
-        subject: subject!,
-        value: Number(value),
-        date,
-      })
-    );
-    navigation.goBack();
-  };
+  const canSave =
+    [subject, value, date].every(Boolean) && addNewStatus === "idle";
 
-  const onDeleteExpense = () => {
-    dispatch(deleteExpense(id));
-    navigation.goBack();
-  };
-
-  const handleSubmit = () => {
-    if (!subject) {
-      Alert.alert("Invalid subject", "Please enter a subject", [
+  const onUpdateExpense = async () => {
+    if (!canSave) {
+      Alert.alert("Empty fill", "Please complete All fills to save changes", [
         { text: "OK" },
       ]);
       return;
     }
-    if (isNaN(Number(value)) || Number(value) <= 0) {
-      Alert.alert("Invalid value", "Please enter the correct price", [
+
+    try {
+      setAddNewStatus("loading");
+      await dispatch(
+        updateExpense({
+          key: expense!.key,
+          subject: subject!,
+          value: Number(value),
+          date,
+        })
+      ).unwrap();
+    } catch (error) {
+      setAddNewStatus("failed");
+      console.error("Failed to save expense: ", error);
+    } finally {
+      setAddNewStatus("idle");
+      dispatch(fetchExpenses());
+      navigation.goBack();
+    }
+  };
+
+  const onDeleteExpense = async () => {
+    await dispatch(deleteExpense(id));
+    dispatch(fetchExpenses());
+    navigation.goBack();
+  };
+
+  const handleSubmit = async () => {
+    if (!canSave) {
+      Alert.alert("Empty fill", "Please complete All fills to save changes", [
         { text: "OK" },
       ]);
       return;
     }
-    dispatch(
-      newExpense({
-        date,
-        subject,
-        value: Number(value),
-        id: uuid.v4().toString(),
-      })
-    );
 
-    setSubject("");
-    setValue("");
-    setDate(today);
-    navigation.goBack();
+    try {
+      setAddNewStatus("loading");
+      await dispatch(
+        addNewExpense({ date, subject, value: Number(value) })
+      ).unwrap();
+      setSubject("");
+      setValue("");
+      setDate(today);
+    } catch (error) {
+      setAddNewStatus("failed");
+      console.error("Failed to save expense: ", error);
+    } finally {
+      dispatch(fetchExpenses());
+      setAddNewStatus("idle");
+      navigation.goBack();
+    }
   };
 
   return (

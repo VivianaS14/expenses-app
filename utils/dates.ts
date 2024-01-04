@@ -21,6 +21,16 @@ export const getLastSevenDays = (data: Expense[]) => {
   return expensesLast7Days;
 };
 
+export const sortExpenses = (data: Expense[]) => {
+  const oderData = data.sort((a, b) => {
+    const dateA = new Date(a.date as string).getTime();
+    const dateB = new Date(b.date as string).getTime();
+    return dateB - dateA;
+  });
+
+  return data;
+};
+
 export const getToday = () => {
   const today = new Date();
   const year = today.getFullYear();

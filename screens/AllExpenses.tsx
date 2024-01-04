@@ -1,19 +1,34 @@
-import { FlatList, ListRenderItemInfo, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import {
+  FlatList,
+  ListRenderItemInfo,
+  StyleSheet,
+  View,
+  Text,
+} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import TitleCard from "../components/TitleCard";
-import { expensesData } from "../data/dummy-data";
 import ExpensesCard from "../components/ExpensesCard";
+
+import { expensesData } from "../data/dummy-data";
 import { Expense } from "../types/Expense";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootParamList } from "../types/Navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import { useEffect, useLayoutEffect } from "react";
+
+import { AppDispatch, RootState } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { allExpenses, fetchExpenses } from "../features/expenses/expensesSlice";
+import { ActivityIndicator } from "react-native-paper";
 
 type Props = NativeStackScreenProps<RootParamList, "All">;
 
 export default function AllExpenses({ navigation }: Props) {
-  const { expenses } = useSelector((state: RootState) => state.expenses);
+  const expenses = useSelector(allExpenses);
+  const expensesStatus = useSelector(
+    (state: RootState) => state.expenses.status
+  );
+  const error = useSelector((state: RootState) => state.expenses.error);
+  const dispatch = useDispatch<AppDispatch>();
 
   const total = expenses.reduce((total, expense) => total + expense.value, 0);
   const pressHandler = (id: string) => {
@@ -22,10 +37,18 @@ export default function AllExpenses({ navigation }: Props) {
     });
   };
 
-  return (
-    <View style={styles.container}>
-      <TitleCard title="Total" value={total} />
+  useEffect(() => {
+    if (expensesStatus === "idle") {
+      dispatch(fetchExpenses());
+    }
+  }, [expensesStatus, dispatch]);
 
+  let content;
+
+  if (expensesStatus === "loading") {
+    content = <ActivityIndicator animating={true} color="#29556B" />;
+  } else if (expensesStatus === "succeeded") {
+    content = (
       <FlatList
         data={expenses}
         renderItem={({ item }: ListRenderItemInfo<Expense>) => (
@@ -33,11 +56,19 @@ export default function AllExpenses({ navigation }: Props) {
             value={item.value}
             subject={item.subject}
             date={item.date}
-            onPress={() => pressHandler(item.id)}
+            onPress={() => pressHandler(item.key)}
           />
         )}
-        keyExtractor={(item) => item.id}
       />
+    );
+  } else if (expensesStatus === "failed") {
+    content = <Text>{error}</Text>;
+  }
+
+  return (
+    <View style={styles.container}>
+      <TitleCard title="Total" value={total} />
+      {content}
     </View>
   );
 }
