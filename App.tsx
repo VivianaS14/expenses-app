@@ -1,15 +1,13 @@
-import { useCallback, useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  FlatListComponent,
-  Pressable,
-} from "react-native";
+import { useCallback } from "react";
+import { StyleSheet, SafeAreaView, Pressable } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from "@react-navigation/native-stack";
 
-import { Button, Provider as PaperProvider } from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
 
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
@@ -21,27 +19,17 @@ import AllExpenses from "./screens/AllExpenses";
 import Expense from "./screens/Expense";
 
 import { RootParamList } from "./types/Navigation";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { store } from "./store";
-import ModalNewExpense from "./components/ModalNewExpense";
-import { Expense as ExpenseType } from "./types/Expense";
-import { newExpense as addNewExpense } from "./features/expenses/expensesSlice";
 
 SplashScreen.preventAutoHideAsync();
 
 const BottomTab = createBottomTabNavigator<RootParamList>();
-
 const Stack = createNativeStackNavigator<RootParamList>();
 
-function BottomNavigator() {
-  const [isOpenNewExpense, setIsOpenNewExpense] = useState(false);
+type Props = NativeStackScreenProps<RootParamList, "Buttons">;
 
-  const dispatch = useDispatch();
-
-  const newExpenseHandler = (expense: ExpenseType) => {
-    dispatch(addNewExpense(expense));
-  };
-
+function BottomNavigator({ navigation }: Props) {
   return (
     <>
       <BottomTab.Navigator
@@ -71,7 +59,7 @@ function BottomNavigator() {
                 styles.menuButton,
                 pressed ? { opacity: 0.5 } : null,
               ]}
-              onPress={() => setIsOpenNewExpense(true)}
+              onPress={() => navigation.navigate("Expense", { id: "" })}
             >
               <Ionicons name="add-circle-outline" size={27} color="#FFF7D6" />
             </Pressable>
@@ -101,11 +89,6 @@ function BottomNavigator() {
           }}
         />
       </BottomTab.Navigator>
-      <ModalNewExpense
-        isVisible={isOpenNewExpense}
-        onClose={() => setIsOpenNewExpense(false)}
-        onSubmitForm={newExpenseHandler}
-      />
     </>
   );
 }

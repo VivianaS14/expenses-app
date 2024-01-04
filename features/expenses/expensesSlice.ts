@@ -10,8 +10,14 @@ const initialState: State = {
     {
       id: "EX1EOVJJ",
       subject: "Sun Cream",
-      date: "2024-01-02 12:17",
+      date: "2024-01-13 12:17",
       value: 75,
+    },
+    {
+      id: "EX1EOVJ2",
+      subject: "Netflix",
+      date: "2024-01-01 12:17",
+      value: 25,
     },
   ],
 };
@@ -21,7 +27,7 @@ export const expenseSlice = createSlice({
   initialState,
   reducers: {
     newExpense: (state, action: PayloadAction<Expense>) => {
-      state.expenses.push(action.payload);
+      state.expenses.unshift(action.payload);
     },
     updateExpense: (state, action: PayloadAction<Expense>) => {
       const index = state.expenses.findIndex(

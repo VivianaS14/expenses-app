@@ -1,17 +1,24 @@
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Button, TextInput } from "react-native-paper";
-import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import { Button } from "react-native-paper";
+import { DateType } from "react-native-ui-datepicker";
+
+import uuid from "react-native-uuid";
 
 import { RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateExpense,
   deleteExpense,
+  newExpense,
 } from "../features/expenses/expensesSlice";
 
 import { RootParamList } from "../types/Navigation";
+
+import CustomInput from "../components/CustomInput";
+import CustomDatePicker from "../components/CustomDatePicker";
+import { getToday } from "../utils/dates";
 
 type Props = NativeStackScreenProps<RootParamList, "Expense">;
 
@@ -19,86 +26,97 @@ export default function Expense({ route, navigation }: Props) {
   const { expenses } = useSelector((state: RootState) => state.expenses);
   const dispatch = useDispatch();
 
-  const id = route.params.id;
-  const expense = expenses.find((expense) => expense.id === id)!;
+  const today = getToday();
 
-  const [subject, setSubject] = useState(expense?.subject);
-  const [value, setValue] = useState(expense?.value.toString());
-  const [date, setDate] = useState<DateType>(expense?.date);
+  const id = route.params.id;
+  const expense = expenses.find((expense) => expense.id === id);
+
+  const [subject, setSubject] = useState(expense ? expense.subject : "");
+  const [value, setValue] = useState(expense ? `${expense.value}` : "");
+  const [date, setDate] = useState<DateType>(expense ? expense.date : today);
 
   const onUpdateExpense = () => {
     dispatch(
       updateExpense({
-        id: expense?.id,
-        subject,
+        id: expense!.id,
+        subject: subject!,
         value: Number(value),
         date,
       })
     );
-
     navigation.goBack();
   };
 
   const onDeleteExpense = () => {
     dispatch(deleteExpense(id));
+    navigation.goBack();
+  };
 
+  const handleSubmit = () => {
+    if (!subject) {
+      Alert.alert("Invalid subject", "Please enter a subject", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+    if (isNaN(Number(value)) || Number(value) <= 0) {
+      Alert.alert("Invalid value", "Please enter the correct price", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+    dispatch(
+      newExpense({
+        date,
+        subject,
+        value: Number(value),
+        id: uuid.v4().toString(),
+      })
+    );
+
+    setSubject("");
+    setValue("");
+    setDate(today);
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Subject:</Text>
-      <TextInput
+      <CustomInput
+        label=""
+        placeholder="Example: A Book"
         value={subject}
         onChangeText={(text) => setSubject(text)}
-        placeholder="Example: A Book"
-        mode="outlined"
-        selectionColor="#00BAA3"
-        activeOutlineColor="#00BAA3"
-        outlineColor="#29556B"
       />
 
       <Text style={styles.title}>Value:</Text>
-      <TextInput
+      <CustomInput
+        label=""
+        placeholder="0"
+        isNumeric={true}
         value={value}
         onChangeText={(value) => setValue(value)}
-        keyboardType="number-pad"
-        mode="outlined"
-        selectionColor="#00BAA3"
-        activeOutlineColor="#00BAA3"
-        outlineColor="#29556B"
-        left={<TextInput.Icon icon="cash" />}
       />
 
       <Text style={styles.title}>Date:</Text>
-      <View style={styles.dateContainer}>
-        <View style={styles.datePicker}>
-          <DateTimePicker
-            mode="date"
-            value={date}
-            onValueChange={(date) => setDate(date)}
-            maximumDate={new Date()}
-            displayFullDays={true}
-            headerButtonColor="#00BAA3"
-            headerContainerStyle={{ paddingBottom: 5 }}
-            selectedItemColor="#00BAA3"
-            selectedTextStyle={{
-              fontFamily: "Poppins-SemiBold",
-            }}
-            todayContainerStyle={{
-              borderWidth: 1,
-            }}
-            calendarTextStyle={{ fontFamily: "Poppins-Medium" }}
-          />
-        </View>
-      </View>
+      <CustomDatePicker date={date} onValueChange={(date) => setDate(date)} />
+
       <View style={styles.buttonsContainer}>
-        <Button mode="contained" color="#29556B" onPress={onUpdateExpense}>
-          Update
-        </Button>
-        <Button color="#86363B" onPress={onDeleteExpense}>
-          Delete
-        </Button>
+        {expense ? (
+          <>
+            <Button mode="contained" color="#29556B" onPress={onUpdateExpense}>
+              Update
+            </Button>
+            <Button color="#86363B" onPress={onDeleteExpense}>
+              Delete
+            </Button>
+          </>
+        ) : (
+          <Button mode="contained" color="#29556B" onPress={handleSubmit}>
+            Add New
+          </Button>
+        )}
       </View>
     </View>
   );
@@ -113,6 +131,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Poppins-Medium",
     fontSize: 18,
+    paddingHorizontal: 15,
   },
 
   dateContainer: {

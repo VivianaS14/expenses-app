@@ -8,6 +8,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootParamList } from "../types/Navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { useEffect, useLayoutEffect } from "react";
 
 type Props = NativeStackScreenProps<RootParamList, "All">;
 
@@ -15,13 +16,6 @@ export default function AllExpenses({ navigation }: Props) {
   const { expenses } = useSelector((state: RootState) => state.expenses);
 
   const total = expenses.reduce((total, expense) => total + expense.value, 0);
-
-  const allExpenses = expenses.sort((a, b) => {
-    const dateA = new Date(a.date as string).getTime();
-    const dateB = new Date(b.date as string).getTime();
-    return dateB - dateA;
-  });
-
   const pressHandler = (id: string) => {
     navigation.navigate("Expense", {
       id,
@@ -33,7 +27,7 @@ export default function AllExpenses({ navigation }: Props) {
       <TitleCard title="Total" value={total} />
 
       <FlatList
-        data={allExpenses}
+        data={expenses}
         renderItem={({ item }: ListRenderItemInfo<Expense>) => (
           <ExpensesCard
             value={item.value}
