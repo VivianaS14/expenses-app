@@ -17,8 +17,8 @@ import {
 import { RootParamList } from "../types/Navigation";
 import { Status } from "../types/Expense";
 
-import CustomInput from "../components/CustomInput";
-import CustomDatePicker from "../components/CustomDatePicker";
+import CustomInput from "../components/UI/CustomInput";
+import CustomDatePicker from "../components/UI/CustomDatePicker";
 import { getToday } from "../utils/dates";
 import { expensesApi } from "../api";
 import { Colors } from "../utils/colors";
@@ -115,6 +115,7 @@ export default function Expense({ route, navigation }: Props) {
         label=""
         placeholder="0"
         isNumeric={true}
+        keyboardType="number-pad"
         value={value}
         onChangeText={(value) => setValue(value)}
       />

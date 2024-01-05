@@ -7,8 +7,8 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import TitleCard from "../components/TitleCard";
-import ExpensesCard from "../components/ExpensesCard";
+import TitleCard from "../components/UI/TitleCard";
+import ExpensesCard from "../components/UI/ExpensesCard";
 
 import { expensesData } from "../data/dummy-data";
 import { RootParamList } from "../types/Navigation";
