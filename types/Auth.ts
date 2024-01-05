@@ -16,3 +16,14 @@ export interface Credential {
   email: string;
   password: string;
 }
+
+export interface SignUpApiResponse {
+  idToken: string;
+  email: string;
+  refreshToken: string;
+  expiresIn: string;
+  localId: string;
+  registered?: boolean;
+}
+
+export type AuthMode = "signUp" | "signInWithPassword";
