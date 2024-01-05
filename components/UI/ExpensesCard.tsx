@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { DateType } from "react-native-ui-datepicker";
-import { Colors } from "../utils/colors";
+import { Colors } from "../../utils/colors";
 
 interface Props {
   subject: string;

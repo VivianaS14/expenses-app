@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
-import { Colors } from "../utils/colors";
+import { Colors } from "../../utils/colors";
 
 interface Props {
   date: DateType;

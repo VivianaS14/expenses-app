@@ -1,6 +1,6 @@
-import { StyleSheet, View } from "react-native";
+import { KeyboardTypeOptions, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { Colors } from "../utils/colors";
+import { Colors } from "../../utils/colors";
 
 interface Props {
   value: string;
@@ -8,6 +8,9 @@ interface Props {
   label: string;
   placeholder: string;
   isNumeric?: boolean;
+  keyboardType?: KeyboardTypeOptions;
+  secureTextEntry?: boolean;
+  error?: boolean;
 }
 
 export default function CustomInput({
@@ -16,6 +19,9 @@ export default function CustomInput({
   label,
   placeholder,
   isNumeric,
+  keyboardType,
+  secureTextEntry,
+  error,
 }: Props) {
   return (
     <View style={styles.inputContainer}>
@@ -24,12 +30,14 @@ export default function CustomInput({
         onChangeText={onChangeText}
         label={label}
         placeholder={placeholder}
-        keyboardType={isNumeric ? "number-pad" : "default"}
+        keyboardType={keyboardType}
         left={isNumeric && <TextInput.Icon icon="cash" />}
         mode="outlined"
         selectionColor={Colors.secondColor}
         activeOutlineColor={Colors.secondColor}
         outlineColor={Colors.mainColor}
+        secureTextEntry={secureTextEntry}
+        error={error}
       />
     </View>
   );
