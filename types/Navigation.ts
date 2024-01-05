@@ -5,4 +5,5 @@ export type RootParamList = {
   Buttons: undefined;
   Login: undefined;
   SignUp: undefined;
+  User: undefined;
 };
