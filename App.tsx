@@ -17,14 +17,16 @@ import * as SplashScreen from "expo-splash-screen";
 import RecentExpenses from "./screens/RecentExpenses";
 import AllExpenses from "./screens/AllExpenses";
 import Expense from "./screens/Expense";
-
-import { RootParamList } from "./types/Navigation";
-import { Provider, useSelector } from "react-redux";
-import { store } from "./store";
-import { Colors } from "./utils/colors";
 import Login from "./screens/Login";
 import SignUp from "./screens/Signup";
-import { authState } from "./features/auth/authSlice";
+import User from "./screens/User";
+
+import { RootParamList } from "./types/Navigation";
+import { Colors } from "./utils/colors";
+
+import { store } from "./store";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { authState, setIsEditing } from "./features/auth/authSlice";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +36,8 @@ const Stack = createNativeStackNavigator<RootParamList>();
 type Props = NativeStackScreenProps<RootParamList, "Buttons">;
 
 function BottomNavigator({ navigation }: Props) {
+  const dispatch = useDispatch();
+
   return (
     <>
       <BottomTab.Navigator
@@ -94,6 +98,32 @@ function BottomNavigator({ navigation }: Props) {
               <Ionicons name="calendar" size={24} color={color} />
             ),
             title: "All Expenses",
+          }}
+        />
+        <BottomTab.Screen
+          name="User"
+          component={User}
+          options={{
+            tabBarLabel: "Account",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="person-circle" size={24} color={color} />
+            ),
+            title: "Account",
+            headerRight: () => (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.menuButton,
+                  pressed ? { opacity: 0.5 } : null,
+                ]}
+                onPress={() => dispatch(setIsEditing(true))}
+              >
+                <Ionicons
+                  name="pencil-sharp"
+                  size={27}
+                  color={Colors.thirdColor}
+                />
+              </Pressable>
+            ),
           }}
         />
       </BottomTab.Navigator>

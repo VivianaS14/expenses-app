@@ -5,12 +5,13 @@ import { Colors } from "../../utils/colors";
 interface Props {
   value: string;
   onChangeText: (text: string) => void;
-  label: string;
-  placeholder: string;
+  label?: string;
+  placeholder?: string;
   isNumeric?: boolean;
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
   error?: boolean;
+  disabled?: boolean;
 }
 
 export default function CustomInput({
@@ -22,6 +23,7 @@ export default function CustomInput({
   keyboardType,
   secureTextEntry,
   error,
+  disabled,
 }: Props) {
   return (
     <View style={styles.inputContainer}>
@@ -38,6 +40,7 @@ export default function CustomInput({
         outlineColor={Colors.mainColor}
         secureTextEntry={secureTextEntry}
         error={error}
+        disabled={disabled}
       />
     </View>
   );
