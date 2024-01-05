@@ -22,6 +22,8 @@ import { RootParamList } from "./types/Navigation";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { Colors } from "./utils/colors";
+import Login from "./screens/Login";
+import SignUp from "./screens/Signup";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -98,6 +100,64 @@ function BottomNavigator({ navigation }: Props) {
   );
 }
 
+function AuthStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: {
+          fontFamily: "Poppins-SemiBold",
+          fontSize: 27,
+          color: Colors.thirdColor,
+        },
+        headerTitleAlign: "center",
+        headerTintColor: Colors.thirdColor,
+        contentStyle: { backgroundColor: Colors.thirdColor },
+      }}
+    >
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SignUp" component={SignUp} />
+    </Stack.Navigator>
+  );
+}
+
+function AuthenticatedStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: {
+          fontFamily: "Poppins-SemiBold",
+          fontSize: 27,
+          color: Colors.thirdColor,
+        },
+        headerTitleAlign: "center",
+        headerTintColor: Colors.thirdColor,
+        contentStyle: { backgroundColor: Colors.thirdColor },
+      }}
+    >
+      <Stack.Screen name="Buttons" component={BottomNavigator} />
+      <Stack.Screen name="Recent" component={RecentExpenses} />
+      <Stack.Screen
+        name="Expense"
+        component={Expense}
+        options={{
+          headerShown: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function Navigation() {
+  return (
+    <NavigationContainer>
+      <AuthStack />
+    </NavigationContainer>
+  );
+}
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Poppins-Bold": require("./assets/fonts/Poppins-Bold.ttf"),
@@ -122,32 +182,7 @@ export default function App() {
     <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
       <PaperProvider>
         <Provider store={store}>
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-                headerStyle: { backgroundColor: Colors.mainColor },
-                headerTitleStyle: {
-                  fontFamily: "Poppins-SemiBold",
-                  fontSize: 27,
-                  color: Colors.thirdColor,
-                },
-                headerTitleAlign: "center",
-                headerTintColor: Colors.thirdColor,
-                contentStyle: { backgroundColor: Colors.thirdColor },
-              }}
-            >
-              <Stack.Screen name="Buttons" component={BottomNavigator} />
-              <Stack.Screen name="Recent" component={RecentExpenses} />
-              <Stack.Screen
-                name="Expense"
-                component={Expense}
-                options={{
-                  headerShown: true,
-                }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
+          <Navigation />
         </Provider>
 
         <StatusBar style="light" />

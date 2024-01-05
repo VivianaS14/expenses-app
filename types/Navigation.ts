@@ -3,4 +3,6 @@ export type RootParamList = {
   All: undefined;
   Expense: { id: string };
   Buttons: undefined;
+  Login: undefined;
+  SignUp: undefined;
 };
