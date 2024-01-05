@@ -19,11 +19,12 @@ import AllExpenses from "./screens/AllExpenses";
 import Expense from "./screens/Expense";
 
 import { RootParamList } from "./types/Navigation";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { store } from "./store";
 import { Colors } from "./utils/colors";
 import Login from "./screens/Login";
 import SignUp from "./screens/Signup";
+import { authState } from "./features/auth/authSlice";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -151,9 +152,11 @@ function AuthenticatedStack() {
 }
 
 function Navigation() {
+  const { isAuthenticated } = useSelector(authState);
+
   return (
     <NavigationContainer>
-      <AuthStack />
+      {isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }

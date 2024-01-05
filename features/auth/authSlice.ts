@@ -4,6 +4,7 @@ import { authApi } from "../../api";
 import { FIREBASE_AUTH_API_KEY } from "@env";
 
 import { AuthMode, Credential, SignUpApiResponse } from "../../types/Auth";
+import { RootState } from "../../store";
 
 export interface State {
   token: string;
@@ -55,3 +56,5 @@ export const authSlice = createSlice({
 export const { logOut } = authSlice.actions;
 
 export default authSlice.reducer;
+
+export const authState = (state: RootState) => state.auth;
