@@ -12,6 +12,7 @@ import {
   setIsEditing,
   updateProfile,
   updatePassword,
+  deleteAccount,
 } from "../features/auth/authSlice";
 
 import { Colors } from "../utils/colors";
@@ -87,6 +88,16 @@ export default function User() {
     setImage(profile.photoUrl);
   };
 
+  const onDeleteAccount = () => {
+    Alert.alert("Are you sure you want to delete?", "There is no going back", [
+      {
+        text: "Yes",
+        onPress: async () => await dispatch(deleteAccount(token)),
+      },
+      { text: "Cancel" },
+    ]);
+  };
+
   useEffect(() => {
     if (token) {
       dispatch(getProfileData(token));
@@ -160,7 +171,9 @@ export default function User() {
             >
               Log Out
             </Button>
-            <Button color="#86363B">Delete Account</Button>
+            <Button color="#86363B" onPress={onDeleteAccount}>
+              Delete Account
+            </Button>
           </>
         )}
       </View>

@@ -96,6 +96,13 @@ export const updatePassword = createAsyncThunk(
   }
 );
 
+export const deleteAccount = createAsyncThunk(
+  "auth/deleteAccount",
+  async (idToken: string) => {
+    await authApi.post(`:delete?key=${FIREBASE_AUTH_API_KEY}`, { idToken });
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -138,6 +145,11 @@ export const authSlice = createSlice({
           ...state.profile,
           passwordHash: action.payload.passwordHash,
         };
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.token = "";
+        state.profile = initialState.profile;
       });
   },
 });
