@@ -6,7 +6,7 @@ import AuthContent from "../components/Auth/AuthContent";
 import { Credential } from "../types/Auth";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
+import { AppDispatch } from "../store";
 import { authState, authenticate } from "../features/auth/authSlice";
 
 import { Colors } from "../utils/colors";
@@ -19,10 +19,8 @@ export default function Login() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   const logInHandler = async (credential: Credential) => {
-    console.log("Dentro del login");
     try {
       setIsAuthenticating(true);
-      console.log("Dispatch");
       await dispatch(
         authenticate({
           authMode: "signInWithPassword",
