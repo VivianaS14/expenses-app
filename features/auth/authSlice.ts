@@ -111,6 +111,7 @@ export const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = "";
       state.profile = initialState.profile;
+      state.error = undefined;
     },
     updateToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
@@ -125,6 +126,9 @@ export const authSlice = createSlice({
       .addCase(authenticate.fulfilled, (state, action) => {
         state.token = action.payload.idToken;
         state.isAuthenticated = !!action.payload.idToken;
+      })
+      .addCase(authenticate.rejected, (state, action) => {
+        state.error = action.error;
       })
       .addCase(getProfileData.fulfilled, (state, action) => {
         state.profile = action.payload.users[0];
@@ -159,5 +163,3 @@ export const { logOut, updateToken, setIsEditing } = authSlice.actions;
 export default authSlice.reducer;
 
 export const authState = (state: RootState) => state.auth;
-
-export const profileData = (state: RootState) => state.auth;
