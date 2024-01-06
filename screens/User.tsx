@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Avatar, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
@@ -11,6 +11,7 @@ import {
   getProfileData,
   setIsEditing,
   updateProfile,
+  updatePassword,
 } from "../features/auth/authSlice";
 
 import { Colors } from "../utils/colors";
@@ -22,7 +23,6 @@ export default function User() {
   const dispatch = useDispatch<AppDispatch>();
 
   const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [image, setImage] = useState<string>("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -41,23 +41,38 @@ export default function User() {
   };
 
   const onSubmit = async () => {
-    if (profile.displayName !== name || profile.photoUrl !== image) {
-      try {
-        setIsUpdating(true);
+    const passwordIsValid = password.length > 6;
+    const nameIsValid = Boolean(name);
+
+    if (!passwordIsValid || !nameIsValid) {
+      Alert.alert("Invalid input", "Please check your entered credentials");
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      if (profile.displayName !== name || profile.photoUrl !== image) {
         await dispatch(
           updateProfile({
             displayName: name,
             photoUrl: image,
             idToken: token,
-            returnSecureToken: true,
           })
         );
-      } catch (error) {
-        console.error("Fail to save changes ", error);
-      } finally {
-        setIsUpdating(false);
-        dispatch(setIsEditing(false));
       }
+      if (profile.passwordHash !== password) {
+        await dispatch(
+          updatePassword({
+            password: password,
+            idToken: token,
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Fail to save changes ", error);
+    } finally {
+      setIsUpdating(false);
+      dispatch(setIsEditing(false));
     }
   };
 
@@ -68,7 +83,6 @@ export default function User() {
   const onCancel = () => {
     dispatch(setIsEditing(false));
     setName(profile.displayName ?? "My Account");
-    setEmail(profile.email);
     setPassword(profile.passwordHash);
     setImage(profile.photoUrl);
   };
@@ -81,7 +95,6 @@ export default function User() {
 
   useEffect(() => {
     setName(profile.displayName ?? "My Account");
-    setEmail(profile.email);
     setPassword(profile.passwordHash);
     setImage(profile.photoUrl);
   }, [profile]);
@@ -91,7 +104,7 @@ export default function User() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
         <Avatar.Image
           source={
@@ -116,11 +129,7 @@ export default function User() {
         disabled={!isEditing}
       />
       <Text style={styles.title}>Email:</Text>
-      <CustomInput
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        disabled={!isEditing}
-      />
+      <CustomInput value={profile.email} onChangeText={() => {}} disabled />
       <Text style={styles.title}>Password:</Text>
       <CustomInput
         value={password}
@@ -155,7 +164,7 @@ export default function User() {
           </>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

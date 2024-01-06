@@ -9,7 +9,7 @@ export interface User {
   email: string;
   emailVerified: boolean;
   displayName: string;
-  providerUserInfo: UserInfo[];
+  providerUserInfo: ProviderUserInfo[];
   photoUrl: string;
   passwordHash: string;
   passwordUpdatedAt: Double;
@@ -20,14 +20,14 @@ export interface User {
   customAuth: boolean;
 }
 
-export interface UserInfo {
-  providerId: string;
-  displayName: string;
-  photoUrl: string;
-  federatedId: string;
-  email: string;
-  rawId: string;
-  screenName: string;
+export interface ProviderUserInfo {
+  providerId?: string;
+  displayName?: string;
+  photoUrl?: string;
+  federatedId?: string;
+  email?: string;
+  rawId?: string;
+  screenName?: string;
 }
 
 export interface UpdateProfileRequest {
@@ -35,7 +35,6 @@ export interface UpdateProfileRequest {
   displayName: string;
   photoUrl: string;
   deleteAttribute?: string;
-  returnSecureToken: boolean;
 }
 
 export interface UpdateProfileResponse {
@@ -50,9 +49,17 @@ export interface UpdateProfileResponse {
   expiresIn: string;
 }
 
-export type ProviderUserInfo = {
-  providerId: string;
-  federatedId: string;
-  displayName: string;
-  photoUrl: string;
-};
+export interface UpdatePasswordRequest {
+  idToken: string;
+  password: string;
+}
+
+export interface UpdatePasswordResponse {
+  localId: string;
+  email: string;
+  passwordHash: string;
+  providerUserInfo: ProviderUserInfo[];
+  idToken: string;
+  refreshToken: string;
+  expiresIn: string;
+}

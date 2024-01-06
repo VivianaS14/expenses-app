@@ -6,6 +6,8 @@ import { FIREBASE_AUTH_API_KEY } from "@env";
 import { AuthMode, Credential, SignUpApiResponse } from "../../types/Auth";
 import { RootState } from "../../store";
 import {
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
   User,
@@ -17,6 +19,7 @@ export interface State {
   isAuthenticated: boolean;
   profile: User;
   isEditing: boolean;
+  error?: unknown;
 }
 
 const initialState: State = {
@@ -76,7 +79,18 @@ export const updateProfile = createAsyncThunk(
   async (updateProfile: UpdateProfileRequest) => {
     const { data } = await authApi.post<UpdateProfileResponse>(
       `:update?key=${FIREBASE_AUTH_API_KEY}`,
-      updateProfile
+      { ...updateProfile, returnSecureToken: true }
+    );
+    return data;
+  }
+);
+
+export const updatePassword = createAsyncThunk(
+  "auth/updatePassword",
+  async (updatePassword: UpdatePasswordRequest) => {
+    const { data } = await authApi.post<UpdatePasswordResponse>(
+      `:update?key=${FIREBASE_AUTH_API_KEY}`,
+      { ...updatePassword, returnSecureToken: true }
     );
     return data;
   }
@@ -115,6 +129,14 @@ export const authSlice = createSlice({
           ...state.profile,
           displayName: action.payload.displayName,
           photoUrl: action.payload.photoUrl,
+        };
+      })
+      .addCase(updatePassword.fulfilled, (state, action) => {
+        state.token = action.payload.idToken;
+        state.isAuthenticated = true;
+        state.profile = {
+          ...state.profile,
+          passwordHash: action.payload.passwordHash,
         };
       });
   },
