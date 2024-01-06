@@ -19,7 +19,7 @@ import { Colors } from "../utils/colors";
 import CustomInput from "../components/UI/CustomInput";
 
 export default function User() {
-  const { token, profile, isEditing } = useSelector(authState);
+  const { token, profile, isEditing, error } = useSelector(authState);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -109,6 +109,12 @@ export default function User() {
     setPassword(profile.passwordHash);
     setImage(profile.photoUrl);
   }, [profile]);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Failed!", "Could not save changes. Please try again later!");
+    }
+  }, [error]);
 
   if (isUpdating) {
     return <ActivityIndicator animating={true} color={Colors.mainColor} />;

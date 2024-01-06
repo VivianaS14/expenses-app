@@ -126,12 +126,14 @@ export const authSlice = createSlice({
       .addCase(authenticate.fulfilled, (state, action) => {
         state.token = action.payload.idToken;
         state.isAuthenticated = !!action.payload.idToken;
+        state.error = undefined;
       })
       .addCase(authenticate.rejected, (state, action) => {
         state.error = action.error;
       })
       .addCase(getProfileData.fulfilled, (state, action) => {
         state.profile = action.payload.users[0];
+        state.error = undefined;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.token = action.payload.idToken;
@@ -141,6 +143,10 @@ export const authSlice = createSlice({
           displayName: action.payload.displayName,
           photoUrl: action.payload.photoUrl,
         };
+        state.error = undefined;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.error = action.error;
       })
       .addCase(updatePassword.fulfilled, (state, action) => {
         state.token = action.payload.idToken;
@@ -149,11 +155,16 @@ export const authSlice = createSlice({
           ...state.profile,
           passwordHash: action.payload.passwordHash,
         };
+        state.error = undefined;
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.error = action.error;
       })
       .addCase(deleteAccount.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.token = "";
         state.profile = initialState.profile;
+        state.error = undefined;
       });
   },
 });
