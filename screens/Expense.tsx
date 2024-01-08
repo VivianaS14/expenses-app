@@ -28,7 +28,7 @@ type Props = NativeStackScreenProps<RootParamList, "Expense">;
 export default function Expense({ route, navigation }: Props) {
   const id = route.params.id;
   const expense = useSelector((state: RootState) => expenseById(state, id));
-  const { profile } = useSelector(authState);
+  const { profile, token } = useSelector(authState);
   const dispatch = useDispatch<AppDispatch>();
 
   const today = getToday();
@@ -60,6 +60,7 @@ export default function Expense({ route, navigation }: Props) {
             date,
           },
           userId: profile.localId,
+          token,
         })
       ).unwrap();
     } catch (error) {
@@ -67,14 +68,14 @@ export default function Expense({ route, navigation }: Props) {
       console.error("Failed to save expense: ", error);
     } finally {
       setAddNewStatus("idle");
-      dispatch(fetchExpenses(profile.localId));
+      dispatch(fetchExpenses({ userId: profile.localId, token }));
       navigation.goBack();
     }
   };
 
   const onDeleteExpense = async () => {
-    await dispatch(deleteExpense({ id, userId: profile.localId }));
-    dispatch(fetchExpenses(profile.localId));
+    await dispatch(deleteExpense({ id, userId: profile.localId, token }));
+    dispatch(fetchExpenses({ userId: profile.localId, token }));
     navigation.goBack();
   };
 
@@ -92,6 +93,7 @@ export default function Expense({ route, navigation }: Props) {
         addNewExpense({
           userId: profile.localId,
           expense: { date, subject, value: Number(value) },
+          token,
         })
       ).unwrap();
       setSubject("");
@@ -101,7 +103,7 @@ export default function Expense({ route, navigation }: Props) {
       setAddNewStatus("failed");
       console.error("Failed to save expense: ", error);
     } finally {
-      dispatch(fetchExpenses(profile.localId));
+      dispatch(fetchExpenses({ userId: profile.localId, token }));
       setAddNewStatus("idle");
       navigation.goBack();
     }

@@ -17,9 +17,9 @@ const initialState: State = {
 
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
-  async (userId: string) => {
+  async ({ userId, token }: { userId: string; token: string }) => {
     const { data } = await expensesApi.get<ExpenseAPI>(
-      `/expenses${userId}.json`
+      `/expenses${userId}.json?auth=${token}`
     );
     return data;
   }
@@ -27,17 +27,36 @@ export const fetchExpenses = createAsyncThunk(
 
 export const addNewExpense = createAsyncThunk(
   "expenses/addNewExpense",
-  async ({ userId, expense }: { expense: AddExpense; userId: string }) => {
-    const { data } = await expensesApi.post(`/expenses${userId}.json`, expense);
+  async ({
+    userId,
+    expense,
+    token,
+  }: {
+    expense: AddExpense;
+    userId: string;
+    token: string;
+  }) => {
+    const { data } = await expensesApi.post(
+      `/expenses${userId}.json?auth=${token}`,
+      expense
+    );
     return data;
   }
 );
 
 export const updateExpense = createAsyncThunk(
   "expenses/updateExpense",
-  async ({ expense, userId }: { expense: Expense; userId: string }) => {
+  async ({
+    expense,
+    userId,
+    token,
+  }: {
+    expense: Expense;
+    userId: string;
+    token: string;
+  }) => {
     const { data } = await expensesApi.put(
-      `/expenses${userId}/${expense.key}.json`,
+      `/expenses${userId}/${expense.key}.json?auth=${token}`,
       {
         subject: expense.subject,
         value: expense.value,
@@ -50,8 +69,18 @@ export const updateExpense = createAsyncThunk(
 
 export const deleteExpense = createAsyncThunk(
   "expenses/deleteExpense",
-  async ({ id, userId }: { id: string; userId: string }) => {
-    const { data } = await expensesApi.delete(`/expenses${userId}/${id}.json`);
+  async ({
+    id,
+    userId,
+    token,
+  }: {
+    id: string;
+    userId: string;
+    token: string;
+  }) => {
+    const { data } = await expensesApi.delete(
+      `/expenses${userId}/${id}.json?auth=${token}`
+    );
     return data;
   }
 );

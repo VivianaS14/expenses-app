@@ -30,7 +30,7 @@ export default function AllExpenses({ navigation }: Props) {
     (state: RootState) => state.expenses.status
   );
   const error = useSelector((state: RootState) => state.expenses.error);
-  const { profile } = useSelector(authState);
+  const { profile, token } = useSelector(authState);
   const dispatch = useDispatch<AppDispatch>();
 
   const total = expenses.reduce((total, expense) => total + expense.value, 0);
@@ -42,7 +42,7 @@ export default function AllExpenses({ navigation }: Props) {
 
   useEffect(() => {
     if (expensesStatus === "idle") {
-      dispatch(fetchExpenses(profile.localId));
+      dispatch(fetchExpenses({ userId: profile.localId, token }));
     }
   }, [expensesStatus, dispatch]);
 

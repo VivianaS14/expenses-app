@@ -31,7 +31,7 @@ export default function RecentExpenses({ navigation }: Props) {
     (state: RootState) => state.expenses.status
   );
   const error = useSelector((state: RootState) => state.expenses.error);
-  const { profile } = useSelector(authState);
+  const { profile, token } = useSelector(authState);
   const dispatch = useDispatch<AppDispatch>();
 
   const lastSevenDays = getLastSevenDays(expenses);
@@ -48,7 +48,7 @@ export default function RecentExpenses({ navigation }: Props) {
 
   useEffect(() => {
     if (expensesStatus === "idle") {
-      dispatch(fetchExpenses(profile.localId));
+      dispatch(fetchExpenses({ userId: profile.localId, token }));
     }
   }, [expensesStatus, dispatch]);
 
