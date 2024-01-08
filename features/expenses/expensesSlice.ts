@@ -102,13 +102,15 @@ export const expenseSlice = createSlice({
       })
       .addCase(fetchExpenses.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const arrayData: Expense[] = Object.values(action.payload).map(
-          (obj, idx) => {
-            const key = Object.keys(action.payload)[idx];
-            return { key, ...obj };
-          }
-        );
-        state.expenses = arrayData;
+        if (action.payload !== null) {
+          const arrayData: Expense[] = Object.values(action.payload).map(
+            (obj, idx) => {
+              const key = Object.keys(action.payload)[idx];
+              return { key, ...obj };
+            }
+          );
+          state.expenses = arrayData;
+        }
       })
       .addCase(fetchExpenses.rejected, (state, action) => {
         state.status = "failed";
