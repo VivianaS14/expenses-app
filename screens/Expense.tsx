@@ -20,14 +20,15 @@ import { Status } from "../types/Expense";
 import CustomInput from "../components/UI/CustomInput";
 import CustomDatePicker from "../components/UI/CustomDatePicker";
 import { getToday } from "../utils/dates";
-import { expensesApi } from "../api";
 import { Colors } from "../utils/colors";
+import { authState } from "../features/auth/authSlice";
 
 type Props = NativeStackScreenProps<RootParamList, "Expense">;
 
 export default function Expense({ route, navigation }: Props) {
   const id = route.params.id;
   const expense = useSelector((state: RootState) => expenseById(state, id));
+  const { profile } = useSelector(authState);
   const dispatch = useDispatch<AppDispatch>();
 
   const today = getToday();
@@ -52,10 +53,13 @@ export default function Expense({ route, navigation }: Props) {
       setAddNewStatus("loading");
       await dispatch(
         updateExpense({
-          key: expense!.key,
-          subject: subject!,
-          value: Number(value),
-          date,
+          expense: {
+            key: expense!.key,
+            subject: subject!,
+            value: Number(value),
+            date,
+          },
+          userId: profile.localId,
         })
       ).unwrap();
     } catch (error) {
@@ -63,14 +67,14 @@ export default function Expense({ route, navigation }: Props) {
       console.error("Failed to save expense: ", error);
     } finally {
       setAddNewStatus("idle");
-      dispatch(fetchExpenses());
+      dispatch(fetchExpenses(profile.localId));
       navigation.goBack();
     }
   };
 
   const onDeleteExpense = async () => {
-    await dispatch(deleteExpense(id));
-    dispatch(fetchExpenses());
+    await dispatch(deleteExpense({ id, userId: profile.localId }));
+    dispatch(fetchExpenses(profile.localId));
     navigation.goBack();
   };
 
@@ -85,7 +89,10 @@ export default function Expense({ route, navigation }: Props) {
     try {
       setAddNewStatus("loading");
       await dispatch(
-        addNewExpense({ date, subject, value: Number(value) })
+        addNewExpense({
+          userId: profile.localId,
+          expense: { date, subject, value: Number(value) },
+        })
       ).unwrap();
       setSubject("");
       setValue("");
@@ -94,7 +101,7 @@ export default function Expense({ route, navigation }: Props) {
       setAddNewStatus("failed");
       console.error("Failed to save expense: ", error);
     } finally {
-      dispatch(fetchExpenses());
+      dispatch(fetchExpenses(profile.localId));
       setAddNewStatus("idle");
       navigation.goBack();
     }

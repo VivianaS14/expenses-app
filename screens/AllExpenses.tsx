@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { allExpenses, fetchExpenses } from "../features/expenses/expensesSlice";
 import { ActivityIndicator } from "react-native-paper";
 import { Colors } from "../utils/colors";
+import { authState } from "../features/auth/authSlice";
 
 type Props = NativeStackScreenProps<RootParamList, "All">;
 
@@ -29,6 +30,7 @@ export default function AllExpenses({ navigation }: Props) {
     (state: RootState) => state.expenses.status
   );
   const error = useSelector((state: RootState) => state.expenses.error);
+  const { profile } = useSelector(authState);
   const dispatch = useDispatch<AppDispatch>();
 
   const total = expenses.reduce((total, expense) => total + expense.value, 0);
@@ -40,7 +42,7 @@ export default function AllExpenses({ navigation }: Props) {
 
   useEffect(() => {
     if (expensesStatus === "idle") {
-      dispatch(fetchExpenses());
+      dispatch(fetchExpenses(profile.localId));
     }
   }, [expensesStatus, dispatch]);
 

@@ -21,6 +21,7 @@ import { allExpenses, fetchExpenses } from "../features/expenses/expensesSlice";
 import { useEffect } from "react";
 import { ActivityIndicator } from "react-native-paper";
 import { Colors } from "../utils/colors";
+import { authState } from "../features/auth/authSlice";
 
 type Props = NativeStackScreenProps<RootParamList, "Recent">;
 
@@ -30,6 +31,7 @@ export default function RecentExpenses({ navigation }: Props) {
     (state: RootState) => state.expenses.status
   );
   const error = useSelector((state: RootState) => state.expenses.error);
+  const { profile } = useSelector(authState);
   const dispatch = useDispatch<AppDispatch>();
 
   const lastSevenDays = getLastSevenDays(expenses);
@@ -46,7 +48,7 @@ export default function RecentExpenses({ navigation }: Props) {
 
   useEffect(() => {
     if (expensesStatus === "idle") {
-      dispatch(fetchExpenses());
+      dispatch(fetchExpenses(profile.localId));
     }
   }, [expensesStatus, dispatch]);
 

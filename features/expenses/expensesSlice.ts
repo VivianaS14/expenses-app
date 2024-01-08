@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AddExpense, Expense, ExpenseAPI } from "../../types/Expense";
 import { RootState } from "../../store";
 import { expensesApi } from "../../api";
@@ -17,36 +17,41 @@ const initialState: State = {
 
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
-  async () => {
-    const { data } = await expensesApi.get<ExpenseAPI>("/expenses.json");
+  async (userId: string) => {
+    const { data } = await expensesApi.get<ExpenseAPI>(
+      `/expenses${userId}.json`
+    );
     return data;
   }
 );
 
 export const addNewExpense = createAsyncThunk(
   "expenses/addNewExpense",
-  async (expense: AddExpense) => {
-    const { data } = await expensesApi.post("/expenses.json", expense);
+  async ({ userId, expense }: { expense: AddExpense; userId: string }) => {
+    const { data } = await expensesApi.post(`/expenses${userId}.json`, expense);
     return data;
   }
 );
 
 export const updateExpense = createAsyncThunk(
   "expenses/updateExpense",
-  async (expense: Expense) => {
-    const { data } = await expensesApi.put(`/expenses/${expense.key}.json`, {
-      subject: expense.subject,
-      value: expense.value,
-      date: expense.date,
-    });
+  async ({ expense, userId }: { expense: Expense; userId: string }) => {
+    const { data } = await expensesApi.put(
+      `/expenses${userId}/${expense.key}.json`,
+      {
+        subject: expense.subject,
+        value: expense.value,
+        date: expense.date,
+      }
+    );
     return data;
   }
 );
 
 export const deleteExpense = createAsyncThunk(
   "expenses/deleteExpense",
-  async (id: string) => {
-    const { data } = await expensesApi.delete(`/expenses/${id}.json`);
+  async ({ id, userId }: { id: string; userId: string }) => {
+    const { data } = await expensesApi.delete(`/expenses${userId}/${id}.json`);
     return data;
   }
 );
@@ -54,7 +59,13 @@ export const deleteExpense = createAsyncThunk(
 export const expenseSlice = createSlice({
   name: "expenses",
   initialState,
-  reducers: {},
+  reducers: {
+    logOut: (state) => {
+      state.status = "idle";
+      state.expenses = [];
+      state.error = null;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchExpenses.pending, (state) => {
@@ -96,7 +107,7 @@ export const expenseSlice = createSlice({
   },
 });
 
-export const {} = expenseSlice.actions;
+export const { logOut } = expenseSlice.actions;
 
 export default expenseSlice.reducer;
 

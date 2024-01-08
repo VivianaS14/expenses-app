@@ -14,6 +14,7 @@ import {
   updatePassword,
   deleteAccount,
 } from "../features/auth/authSlice";
+import { logOut as logOutExpenses } from "../features/expenses/expensesSlice";
 
 import { Colors } from "../utils/colors";
 import CustomInput from "../components/UI/CustomInput";
@@ -79,6 +80,7 @@ export default function User() {
 
   const onLogOut = () => {
     dispatch(logOut());
+    dispatch(logOutExpenses());
   };
 
   const onCancel = () => {

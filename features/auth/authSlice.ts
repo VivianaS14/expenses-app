@@ -127,6 +127,10 @@ export const authSlice = createSlice({
         state.token = action.payload.idToken;
         state.isAuthenticated = !!action.payload.idToken;
         state.error = undefined;
+        state.profile = {
+          ...state.profile,
+          localId: action.payload.localId,
+        };
       })
       .addCase(authenticate.rejected, (state, action) => {
         state.error = action.error;
