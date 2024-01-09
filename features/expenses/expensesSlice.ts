@@ -85,6 +85,16 @@ export const deleteExpense = createAsyncThunk(
   }
 );
 
+export const deleteExpenses = createAsyncThunk(
+  "expenses/deleteUserExpense",
+  async ({ userId, token }: { userId: string; token: string }) => {
+    const { data } = await expensesApi.delete(
+      `/expenses${userId}.json?auth=${token}`
+    );
+    return data;
+  }
+);
+
 export const expenseSlice = createSlice({
   name: "expenses",
   initialState,
@@ -134,6 +144,11 @@ export const expenseSlice = createSlice({
         if (index !== -1) {
           state.expenses.splice(index, 1);
         }
+      })
+      .addCase(deleteExpenses.fulfilled, (state, action) => {
+        state.expenses = [];
+        state.status = "idle";
+        state.error = null;
       });
   },
 });

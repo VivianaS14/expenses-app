@@ -14,7 +14,10 @@ import {
   updatePassword,
   deleteAccount,
 } from "../features/auth/authSlice";
-import { logOut as logOutExpenses } from "../features/expenses/expensesSlice";
+import {
+  deleteExpenses,
+  logOut as logOutExpenses,
+} from "../features/expenses/expensesSlice";
 
 import { Colors } from "../utils/colors";
 import CustomInput from "../components/UI/CustomInput";
@@ -90,11 +93,16 @@ export default function User() {
     setImage(profile.photoUrl);
   };
 
-  const onDeleteAccount = () => {
+  const onDeleteAccount = async () => {
     Alert.alert("Are you sure you want to delete?", "There is no going back", [
       {
         text: "Yes",
-        onPress: async () => await dispatch(deleteAccount(token)),
+        onPress: async () => {
+          await dispatch(deleteAccount(token));
+          await dispatch(
+            deleteExpenses({ userId: profile.localId, token: token })
+          );
+        },
       },
       { text: "Cancel" },
     ]);

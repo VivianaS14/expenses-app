@@ -79,7 +79,7 @@ export const updateProfile = createAsyncThunk(
   async (updateProfile: UpdateProfileRequest) => {
     const { data } = await authApi.post<UpdateProfileResponse>(
       `:update?key=${FIREBASE_AUTH_API_KEY}`,
-      { ...updateProfile, returnSecureToken: true }
+      { ...updateProfile }
     );
     return data;
   }
@@ -90,7 +90,7 @@ export const updatePassword = createAsyncThunk(
   async (updatePassword: UpdatePasswordRequest) => {
     const { data } = await authApi.post<UpdatePasswordResponse>(
       `:update?key=${FIREBASE_AUTH_API_KEY}`,
-      { ...updatePassword, returnSecureToken: true }
+      { ...updatePassword }
     );
     return data;
   }
@@ -140,7 +140,6 @@ export const authSlice = createSlice({
         state.error = undefined;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        state.token = action.payload.idToken;
         state.isAuthenticated = true;
         state.profile = {
           ...state.profile,
@@ -153,7 +152,6 @@ export const authSlice = createSlice({
         state.error = action.error;
       })
       .addCase(updatePassword.fulfilled, (state, action) => {
-        state.token = action.payload.idToken;
         state.isAuthenticated = true;
         state.profile = {
           ...state.profile,
