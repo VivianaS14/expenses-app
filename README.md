@@ -15,4 +15,8 @@ Create an account, customize your profile, and record your daily expenses.
 
 ## Demo
 
-<video src="./assets/expenses-app.mp4" controls title="Demo Expenses App"></video>
+<video src="https://github.com/VivianaS14/expenses-app/assets/97071902/8d57b034-a8e1-495f-a35d-554589a9ec58" controls title="Demo Expenses App"></video>
+
+
+
+
